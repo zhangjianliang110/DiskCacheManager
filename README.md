@@ -8,6 +8,7 @@ Created by zhangjianliang on 2018/3/20
     CacheManager.java
     Demo:
         1)写入 put data
+	
             CacheManager.getInstance(applicationContext).getDiskCache("dir").putObject("fileName", data);
             put with maxSize
             CacheManager.getInstance(applicationContext).getDiskCache("dir", "maxLimitSize").putObject("fileName", data);
