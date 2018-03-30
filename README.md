@@ -7,21 +7,22 @@ Created by zhangjianliang on 2018/3/20
     文件缓存管理入口，都用CacheManager调用就好了，其他类都设置为非public的，避免调用错了
     CacheManager.java
     Demo:
-        1)写入 save data
+        1)写入 put data
             CacheManager.getInstance(applicationContext).getDiskCache("dir").putObject("fileName", data);
-            如果要自定义文件夹
+            put with maxSize
             CacheManager.getInstance(applicationContext).getDiskCache("dir", "maxLimitSize").putObject("fileName", data);
 
-        2)读取 read data
-            同步读取：
+        2)读取 
+            sync read data同步读取：
             CacheManager.getInstance(applicationContext).getDiskCache("dir").get("fileName");
-            异步读取
+            async read data异步读取
             CacheManager.getInstance(applicationContext).getDiskCache("dir").getObject("fileName", new AsyncCallback<String>(){
                         @Override
                         public void onResult(String object) {
 
                         }
                     });
+	3)
 2、内容
     CacheManager.java  封装了一个Map，key为文件夹路径，value为该文件夹的管理器(DiskCache)
 
