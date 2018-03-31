@@ -1,13 +1,16 @@
 # DiskCacheManager
 its a file cache manager tool for android developer, with function of auto clear old files , its safe、stable!
 
+give me advice if you found any problem!
+
 Created by zhangjianliang on 2018/3/20
 
 1、使用
     文件缓存管理入口，都用CacheManager调用就好了，其他类都设置为非public的，避免调用错了
     CacheManager.java
     Demo:
-        1)写入 put data
+        
+	1)写入 put data
 	
             CacheManager.getInstance(applicationContext).getDiskCache("dir").putObject("fileName", data);
             put with maxSize
