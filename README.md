@@ -1,10 +1,13 @@
+###文件缓存管理：
+1、同步读写/异步读写：提供简单易用的api，可以同步读写文件、异步读写文件
+2、异步读取并回调到主线程：提供SyncCallback，该回调函数，在异步读取文件后会回调的主线程
+3、自动从最老的文件开始清理超过缓存大小限制的文件：
+	CacheManager.getInstance(applicationContext).getDiskCache("dir").setAutoClearEnable(true);
+4、线程安全 
+	文件写入有加读写锁，每个文件一把锁，保证线程安全，锁放在对象池中，高效高性能
+5、直接读写对象：提供了api，直接读写对象即可。
+
 # DiskCacheManager
-its a file cache manager tool for android developer, with function of auto clear old files , its safe、stable!
-
-give me advice if you found any problem!
-
-Created by zhangjianliang on 2018/3/20
-
 1、使用
     文件缓存管理入口，都用CacheManager调用就好了，其他类都设置为非public的，避免调用错了
     CacheManager.java
