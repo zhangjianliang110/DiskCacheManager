@@ -11,9 +11,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import io.silvrr.installment.MyApplication;
-import io.silvrr.installment.common.utils.XLogUtil;
-
 /**
  * 文件读写
  * Created by zhangjianliang on 2018/3/19
@@ -36,24 +33,22 @@ class FileCache {
         mAutoClearController = controller;
     }
 
-    public FileCache(String dirPath) {
+    public FileCache(Context context, String dirPath) {
         if (TextUtils.isEmpty(dirPath)) {
             dirPath = FILE_DIR;
         }
-        mDirFile = getFilesDir(dirPath);
+        mDirFile = getFilesDir(context, dirPath);
         mKeyCreator = new SafeKeyCreator();
     }
 
     /**
      * 获取默认文件存储路径
      */
-    private File getFilesDir(String childDir) {
-        Context context = MyApplication.getInstance();
+    private File getFilesDir(Context context, String childDir) {
         File baseDir = new File(context.getFilesDir(), childDir);
         if (!baseDir.exists()) {
             baseDir.mkdirs();
         }
-        XLogUtil.d(TAG, "-------- cache directionary is: " + baseDir.getAbsolutePath() + "---------");
         return baseDir;
     }
 
@@ -70,6 +65,9 @@ class FileCache {
     }
 
     public boolean put(String key, byte[] value) {
+        if (value == null) {
+            return false;
+        }
         String safeKey = getSafeKey(key);
         mWriteLocker.acquire(safeKey);
         File f = getFile(safeKey);
@@ -100,22 +98,31 @@ class FileCache {
     public byte[] get(String key) {
         String safeKey = getSafeKey(key);
         File f = getFile(safeKey);
+        FileInputStream fin = null;
         if (f.exists()) {
             try {
                 if (mAutoClearController != null) {
                     mAutoClearController.get(f);
                 }
-                FileInputStream fin = new FileInputStream(f);
+                fin = new FileInputStream(f);
                 ByteArrayOutputStream outStream = new ByteArrayOutputStream();
                 byte[] buffer = new byte[4096];
                 int len = 0;
                 while ((len = fin.read(buffer)) != -1) {
                     outStream.write(buffer, 0, len);
                 }
-                fin.close();
+
                 return outStream.toByteArray();
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                if (fin != null) {
+                    try {
+                        fin.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
         return null;

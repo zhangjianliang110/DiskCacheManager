@@ -1,10 +1,10 @@
-package io.silvrr.installment.common.controller;
+package com.zjl.cache;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 /**
- * Created by JMing on 2017/6/20.
+ * Created by zhangjianliang on 2018/3/20.
  * 线程池管理类
  */
 

@@ -9,8 +9,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import io.silvrr.installment.common.controller.ThreadPoolFactory;
-
 /**
  * 扫描缓存目录，当缓存超过上限时，从lastModify最小的开始删除，直到缓存文件低于大小限制
  * Created by zhangjianliang on 2018/3/20
@@ -59,24 +57,27 @@ abstract class AutoClearController {
      * 计算 cacheSize和cacheCount
      */
     private synchronized void computeSizeAndCount() {
-        ThreadPoolFactory.instance().fixExecutor(() -> {
-            File[] cacheFiles = mCacheDir.listFiles();
-            if (cacheFiles == null || cacheFiles.length == 0) {
-                return;
-            }
-            int size = 0;
-            for (File file : cacheFiles) {
-                if (file == null || !file.exists()) {
-                    continue;
+        ThreadPoolFactory.instance().fixExecutor(new Runnable() {
+            @Override
+            public void run() {
+                File[] cacheFiles = mCacheDir.listFiles();
+                if (cacheFiles == null || cacheFiles.length == 0) {
+                    return;
                 }
-                if (file.isDirectory()) {//文件夹就干掉好了
-                    deleteFile(file);
-                    continue;
+                int size = 0;
+                for (File file : cacheFiles) {
+                    if (file == null || !file.exists()) {
+                        continue;
+                    }
+                    if (file.isDirectory()) {//文件夹就干掉好了
+                        AutoClearController.this.deleteFile(file);
+                        continue;
+                    }
+                    size += AutoClearController.this.getFileSize(file);
+                    mLastUseDateMap.put(file, file.lastModified());
                 }
-                size += getFileSize(file);
-                mLastUseDateMap.put(file, file.lastModified());
+                mCacheSize.set(size);
             }
-            mCacheSize.set(size);
         });
     }
 
