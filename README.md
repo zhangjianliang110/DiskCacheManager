@@ -1,4 +1,4 @@
-###文件缓存管理：
+文件缓存管理：
 1、同步读写/异步读写：提供简单易用的api，可以同步读写文件、异步读写文件
 2、异步读取并回调到主线程：提供SyncCallback，该回调函数，在异步读取文件后会回调的主线程
 3、自动从最老的文件开始清理超过缓存大小限制的文件： CacheManager.getInstance(applicationContext).getDiskCache("dir").setAutoClearEnable(true);
